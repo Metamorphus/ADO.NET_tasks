@@ -35,8 +35,8 @@ namespace Week6._2
                     GetDistinctCountries();
                     GetLondonSalesmen();
                     GetOrdersWithTofu();
-                    GetGermanProducts();
-                    GetIkuraBuyers();
+                    //GetGermanProducts();
+                    //GetIkuraBuyers();
                     GetEmployeesLeft();
                     GetEmployeesInner();
                     GetAllPhones();
@@ -286,14 +286,25 @@ namespace Week6._2
             {
                 Console.WriteLine("*************FAMIA FOLLOWERS*************");
                 var command = connection.CreateCommand();
-                command.CommandText = @"SELECT DISTINCT ProductID
-                    FROM Orders INNER JOIN [Order Details] ON Orders.OrderID = [Order Details].OrderID
-                    WHERE CustomerID = 'FAMIA'";
+                command.CommandText = @"SELECT CustomerID 
+                    FROM Customers AS outer
+                    WHERE NOT EXISTS (SELECT *
+                       FROM Orders AS or1 INNER JOIN [Order Details] AS od1 ON or1.OrderID = od1.OrderID
+                       WHERE or1.CustomerID = outer.CustomerID and od1.ProductID NOT IN
+                            (SELECT ProductID
+                            FROM Orders AS or2 INNER JOIN [Order Details] AS od2 ON or2.OrderID = od2.OrderID
+                            WHERE or2.CustomerID = 'FAMIA'))
+                    AND NOT EXISTS (SELECT *
+                       FROM Orders AS or3 INNER JOIN [Order Details] AS od3 ON or3.OrderID = od3.OrderID
+                       WHERE or3.CustomerID = 'FAMIA' and od3.ProductID NOT IN
+                            (SELECT ProductID
+                            FROM Orders AS or4 INNER JOIN [Order Details] AS od4 ON or4.OrderID = od4.OrderID
+                            WHERE or4.CustomerID = outer.CustomerID))";
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        Console.WriteLine(reader["ProductID"]);
+                        Console.WriteLine(reader["CustomerID"]);
                     }
                 }
                 Console.WriteLine();
