@@ -35,8 +35,8 @@ namespace Week6._2
                     GetDistinctCountries();
                     GetLondonSalesmen();
                     GetOrdersWithTofu();
-                    //GetGermanProducts();
-                    //GetIkuraBuyers();
+                    GetGermanProducts();
+                    GetIkuraBuyers();
                     GetEmployeesLeft();
                     GetEmployeesInner();
                     GetAllPhones();
